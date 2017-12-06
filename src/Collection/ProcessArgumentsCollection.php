@@ -135,4 +135,37 @@ class ProcessArgumentsCollection extends ArrayCollection
 
         $this->add(implode(',', $paths));
     }
+
+    /**
+     * @param string $argument
+     * @param FilesCollection|\SplFileInfo[] $files
+     */
+    public function addArgumentWithCommaSeparatedFiles($argument, FilesCollection $files)
+    {
+        $paths = [];
+
+        foreach ($files as $file) {
+            $paths[] = $file->getPathname();
+        }
+
+        $this->add(sprintf($argument, implode(',', $paths)));
+    }
+
+    /**
+     * @return array|string
+     */
+    public function generateCliCommand()
+    {
+        $commandline = $this->getValues();
+
+        // Backwards compatibility layer for Symfony Process < 3.3
+        if (class_exists('Symfony\Component\Process\ProcessBuilder')) {
+            $commandline = join(' ', array_map(
+                ['Symfony\Component\Process\ProcessUtils', 'escapeArgument'],
+                $commandline
+            ));
+        }
+
+        return $commandline;
+    }
 }

@@ -6,11 +6,11 @@ use GrumPHP\Collection\LintErrorsCollection;
 use GrumPHP\Linter\Yaml\YamlLinter;
 use GrumPHP\Linter\Yaml\YamlLintError;
 use GrumPHP\Util\Filesystem;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use SplFileInfo;
 
-class YamlLinterTest extends PHPUnit_Framework_TestCase
+class YamlLinterTest extends TestCase
 {
     /**
      * @var YamlLinter
@@ -67,7 +67,12 @@ class YamlLinterTest extends PHPUnit_Framework_TestCase
     function it_should_be_able_to_handle_object_support()
     {
         $this->linter->setObjectSupport(true);
-        $fixture = YamlLinter::supportsFlags() ? 'object-support.yml' : 'object-support-old.yml';
+
+        $fixture = 'object-support-old.yml';
+        if (YamlLinter::supportsFlags()) {
+            $fixture = YamlLinter::supportsTagsWithoutColon() ? 'object-support.yml' : 'object-support-with-colon.yml';
+        }
+
         $this->validateFixture($fixture, 0);
     }
 
@@ -78,7 +83,12 @@ class YamlLinterTest extends PHPUnit_Framework_TestCase
     {
         $this->linter->setObjectSupport(false);
         $this->linter->setExceptionOnInvalidType(true);
-        $fixture = YamlLinter::supportsFlags() ? 'object-support.yml' : 'object-support-old.yml';
+
+        $fixture = 'object-support-old.yml';
+        if (YamlLinter::supportsFlags()) {
+            $fixture = YamlLinter::supportsTagsWithoutColon() ? 'object-support.yml' : 'object-support-with-colon.yml';
+        }
+
         $this->validateFixture($fixture, 1);
     }
 
