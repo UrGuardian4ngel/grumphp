@@ -77,6 +77,7 @@ services:
     grumphp.io.console:
         class: GrumPHP\IO\ConsoleIO
         lazy: true
+        public: true
         arguments:
           - '@console.input'
           - '@console.output'
